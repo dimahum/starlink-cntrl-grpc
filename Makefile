@@ -4,6 +4,16 @@
 build: proto
 	go build -o starlink-client main.go
 
+# Build for specific platform (usage: make build-cross GOOS=linux GOARCH=amd64)
+build-cross: proto
+	@if [ -z "$(GOOS)" ] || [ -z "$(GOARCH)" ]; then \
+		echo "Usage: make build-cross GOOS=<os> GOARCH=<arch>"; \
+		echo "Example: make build-cross GOOS=linux GOARCH=amd64"; \
+		exit 1; \
+	fi
+	$(eval EXT := $(if $(filter windows,$(GOOS)),.exe,))
+	GOOS=$(GOOS) GOARCH=$(GOARCH) go build -o starlink-client-$(GOOS)-$(GOARCH)$(EXT) main.go
+
 # Generate Go code from proto files
 proto:
 	export PATH=$$PATH:$$(go env GOPATH)/bin && \
@@ -13,7 +23,7 @@ proto:
 
 # Clean build artifacts
 clean:
-	rm -f starlink-client
+	rm -f starlink-client starlink-client-*
 	rm -f proto/*.pb.go
 
 # Install dependencies
@@ -38,11 +48,12 @@ run: build
 # Show help
 help:
 	@echo "Available targets:"
-	@echo "  build     - Build the client application"
-	@echo "  proto     - Generate Go code from proto files"
-	@echo "  clean     - Clean build artifacts"
-	@echo "  deps      - Install dependencies"
-	@echo "  test      - Run all tests (unit + integration)"
-	@echo "  unit-test - Run unit tests only"
-	@echo "  run       - Run with default settings"
-	@echo "  help      - Show this help message"
+	@echo "  build       - Build the client application"
+	@echo "  build-cross - Build for specific platform (requires GOOS and GOARCH)"
+	@echo "  proto       - Generate Go code from proto files"
+	@echo "  clean       - Clean build artifacts"
+	@echo "  deps        - Install dependencies"
+	@echo "  test        - Run all tests (unit + integration)"
+	@echo "  unit-test   - Run unit tests only"
+	@echo "  run         - Run with default settings"
+	@echo "  help        - Show this help message"

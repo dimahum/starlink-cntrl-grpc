@@ -10,6 +10,7 @@
 
 # Specific binary name for this project
 starlink-client
+starlink-client-*
 
 # Test binary, built with `go test -c`
 *.test
