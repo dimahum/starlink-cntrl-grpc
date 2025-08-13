@@ -1,11 +1,21 @@
 .PHONY: build clean proto test
 
 # Build the client application
-build: proto
+build:
+	@if [ ! -f proto/device.pb.go ] || [ ! -f proto/device_grpc.pb.go ]; then \
+		echo "Generated protobuf files not found, running proto generation..."; \
+		$(MAKE) proto; \
+	fi
 	go build -o starlink-client main.go
 
 # Generate Go code from proto files
 proto:
+	@if ! command -v protoc >/dev/null 2>&1; then \
+		echo "Error: protoc not found. Please install protobuf-compiler or use pre-generated files."; \
+		echo "On Ubuntu/Debian: sudo apt install protobuf-compiler"; \
+		echo "On macOS: brew install protobuf"; \
+		exit 1; \
+	fi
 	export PATH=$$PATH:$$(go env GOPATH)/bin && \
 	protoc --go_out=. --go_opt=paths=source_relative \
 	       --go-grpc_out=. --go-grpc_opt=paths=source_relative \
@@ -21,6 +31,11 @@ deps:
 	go mod tidy
 	go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
 	go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
+	@echo ""
+	@echo "Note: If you plan to regenerate protobuf files, you also need protoc:"
+	@echo "  Ubuntu/Debian: sudo apt install protobuf-compiler"
+	@echo "  macOS: brew install protobuf"
+	@echo "  The project includes pre-generated .pb.go files for convenience."
 
 # Test the application (will fail without real device)
 test: build
