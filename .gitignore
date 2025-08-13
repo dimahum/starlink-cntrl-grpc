@@ -8,6 +8,9 @@
 *.so
 *.dylib
 
+# Specific binary name for this project
+starlink-client
+
 # Test binary, built with `go test -c`
 *.test
 
