@@ -18,9 +18,33 @@ A Go client for connecting to Starlink devices via gRPC and reading status infor
 
 ## Building
 
+### Local Build
+
 ```bash
 go mod tidy
 go build -o starlink-client main.go
+```
+
+### Cross-Platform Build
+
+Using the Makefile:
+```bash
+make build-cross GOOS=linux GOARCH=amd64
+make build-cross GOOS=darwin GOARCH=amd64
+make build-cross GOOS=windows GOARCH=amd64
+```
+
+### Automated Builds
+
+The project includes GitHub Actions workflows that automatically:
+- Build and test on every push to main branch and pull requests
+- Create cross-platform binaries (Linux, macOS, Windows for AMD64 and ARM64)
+- Publish releases with binaries when git tags are created
+
+To create a release:
+```bash
+git tag v1.0.0
+git push origin v1.0.0
 ```
 
 ## Usage
