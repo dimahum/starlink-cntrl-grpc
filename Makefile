@@ -24,7 +24,12 @@ deps:
 
 # Test the application (will fail without real device)
 test: build
+	go test -v
 	./starlink-client -timeout 2s || echo "Test completed - expected connection failure without real device"
+
+# Run unit tests only
+unit-test:
+	go test -v
 
 # Run with default settings
 run: build
@@ -33,10 +38,11 @@ run: build
 # Show help
 help:
 	@echo "Available targets:"
-	@echo "  build  - Build the client application"
-	@echo "  proto  - Generate Go code from proto files"
-	@echo "  clean  - Clean build artifacts"
-	@echo "  deps   - Install dependencies"
-	@echo "  test   - Test the application"
-	@echo "  run    - Run with default settings"
-	@echo "  help   - Show this help message"
+	@echo "  build     - Build the client application"
+	@echo "  proto     - Generate Go code from proto files"
+	@echo "  clean     - Clean build artifacts"
+	@echo "  deps      - Install dependencies"
+	@echo "  test      - Run all tests (unit + integration)"
+	@echo "  unit-test - Run unit tests only"
+	@echo "  run       - Run with default settings"
+	@echo "  help      - Show this help message"
