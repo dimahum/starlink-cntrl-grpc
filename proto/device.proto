@@ -1,0 +1,57 @@
+syntax = "proto3";
+
+package SpaceX.API.Device;
+
+option go_package = "github.com/dimahum/starlink-cntrl-grpc/api/device";
+
+// Device service provides control and status information for Starlink devices
+service Device {
+  // Handle requests including GetStatus
+  rpc Handle(Request) returns (Response);
+}
+
+// Main request message
+message Request {
+  oneof request {
+    GetStatusRequest get_status = 1004;
+  }
+}
+
+// Main response message
+message Response {
+  oneof response {
+    GetStatusResponse get_status = 1004;
+  }
+}
+
+// Request to get device status
+message GetStatusRequest {}
+
+// Response containing device status
+message GetStatusResponse {
+  DeviceInfo device_info = 1;
+  DeviceState device_state = 2;
+}
+
+// Device information
+message DeviceInfo {
+  string id = 1;
+  string hardware_version = 2;
+  string software_version = 3;
+  string country_code = 4;
+}
+
+// Device state information
+message DeviceState {
+  double uptime_s = 1;
+}
+
+// Status information with more details
+message Status {
+  DeviceInfo device_info = 1;
+  DeviceState device_state = 2;
+  bool is_connected = 3;
+  double uplink_throughput_bps = 4;
+  double downlink_throughput_bps = 5;
+  double ping_latency_ms = 6;
+}
